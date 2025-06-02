@@ -1,0 +1,1 @@
+{"version":1,"contracts":[{"id":"ieancr0n1plug","package_name":"cele_gift_contract","contract_name":"RubDub","module_path":"cele_gift_contract::contracts::RubDubNFT::RubDub","artifacts":{"sierra":"cele_gift_contract_integrationtest_RubDub.test.contract_class.json","casm":null}}]}
