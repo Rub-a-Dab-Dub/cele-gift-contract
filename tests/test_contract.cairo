@@ -90,7 +90,6 @@ fn test_malicious_address_delegate_manager() {
     dispatcher.delegate_manager(user, user1);
     // Validate that the coujobrse ID is correctly incremented
     assert(celebrity_id == 1, 'job_id should start from 1');
-    
 }
 
 #[test]
@@ -168,7 +167,6 @@ fn test_batch_mint_gift() {
     let onwer_of = dispatcher.owner(8);
     assert(onwer_of == user, 'mint fail');
 }
-
 // println!("Array len: {}", job.len());
 
 

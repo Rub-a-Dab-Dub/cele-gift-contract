@@ -9,7 +9,7 @@ pub mod RubDub {
         Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
         StoragePointerWriteAccess,
     };
-    use starknet::{ContractAddress, get_caller_address, contract_address_const};
+    use starknet::{ContractAddress, contract_address_const, get_caller_address};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
@@ -168,7 +168,7 @@ pub mod RubDub {
             let id = self.celebrity_id_count.read() + 1;
             self.celebrity_id_count.write(id);
 
-            let manager : ContractAddress = contract_address_const::<'0x0'>();
+            let manager: ContractAddress = contract_address_const::<'0x0'>();
 
             let celebrity = Celebrity {
                 id,
@@ -199,9 +199,7 @@ pub mod RubDub {
         }
 
         fn set_gift_preferences(
-            ref self: ContractState,
-            celebrity_address: ContractAddress,
-            preferences: GiftCategory,
+            ref self: ContractState, celebrity_address: ContractAddress, preferences: GiftCategory,
         ) {
             let mut celeb = self.celebrities.read(celebrity_address);
             assert(celeb.registered, 'Celebrity not registered');
@@ -211,9 +209,7 @@ pub mod RubDub {
         }
 
         fn delegate_manager(
-            ref self: ContractState,
-            celebrity_address: ContractAddress,
-            manager: ContractAddress,
+            ref self: ContractState, celebrity_address: ContractAddress, manager: ContractAddress,
         ) {
             let caller = get_caller_address();
             let mut celeb = self.celebrities.read(celebrity_address);

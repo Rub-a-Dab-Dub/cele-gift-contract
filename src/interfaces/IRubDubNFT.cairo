@@ -20,7 +20,7 @@ pub trait IRubDubNFT<TContractState> {
         token_uri: ByteArray,
     );
 
-    fn get_manager(self: @TContractState, celebrity_id: u256) -> ContractAddress ;
+    fn get_manager(self: @TContractState, celebrity_id: u256) -> ContractAddress;
 
     fn batch_mint_gifts(
         ref self: TContractState,
@@ -37,15 +37,11 @@ pub trait IRubDubNFT<TContractState> {
     ) -> bool;
 
     fn delegate_manager(
-        ref self: TContractState,
-        celebrity_address: ContractAddress,
-        manager: ContractAddress,
-    ) ;
+        ref self: TContractState, celebrity_address: ContractAddress, manager: ContractAddress,
+    );
 
     fn set_gift_preferences(
-        ref self: TContractState,
-        celebrity_address: ContractAddress,
-        preferences: GiftCategory,
+        ref self: TContractState, celebrity_address: ContractAddress, preferences: GiftCategory,
     );
 
     fn get_preferences(self: @TContractState, celebrity_id: u256) -> GiftCategory;
