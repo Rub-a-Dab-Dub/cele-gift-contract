@@ -17,6 +17,8 @@ pub struct Celebrity {
     pub verified: bool,
     pub royaltyPercentage: u256,
     pub registered: bool,
+    pub manager: ContractAddress,
+    pub preferences: GiftCategory,
 }
 
 #[derive(Debug, Drop, Serde, starknet::Store, Clone, PartialEq)]
@@ -28,9 +30,10 @@ pub enum Rarity {
     Exclusive,
 }
 
-#[derive(Copy, Drop, Serde, starknet::Store)]
+#[derive(Copy, Drop, Serde, starknet::Store, PartialEq)]
 pub enum GiftCategory {
     #[default]
+    NoneSet,
     Roses,
     Shoutout,
     Collectible,

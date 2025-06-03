@@ -47,6 +47,74 @@ fn test_register_celebrity() {
     assert(celebrity.royaltyPercentage == 10, 'royalty mismatch');
 }
 
+
+#[test]
+fn test_delegate_manager() {
+    let contract_address = setup();
+    let dispatcher = IRubDubNFTDispatcher { contract_address };
+
+    // Test input values
+    let user: ContractAddress = contract_address_const::<'user'>();
+    let user1: ContractAddress = contract_address_const::<'manager'>();
+    let user_name = 'wizkid';
+
+    // Ensure the caller is the admin
+    start_cheat_caller_address(contract_address, user);
+    // Call create_job
+    let celebrity_id = dispatcher.register_celebrity(user, user_name);
+    dispatcher.delegate_manager(user, user1);
+    // Validate that the coujobrse ID is correctly incremented
+    assert(celebrity_id == 1, 'job_id should start from 1');
+
+    let celebrity = dispatcher.get_celebrity(celebrity_id);
+
+    assert(celebrity.manager == user1, ' manager address mismatch');
+}
+
+#[test]
+#[should_panic(expected: ('No authorization',))]
+fn test_malicious_address_delegate_manager() {
+    let contract_address = setup();
+    let dispatcher = IRubDubNFTDispatcher { contract_address };
+
+    // Test input values
+    let user: ContractAddress = contract_address_const::<'user'>();
+    let user1: ContractAddress = contract_address_const::<'manager'>();
+    let user_name = 'wizkid';
+
+    // Ensure the caller is the admin
+    start_cheat_caller_address(contract_address, user);
+    // Call create_job
+    let celebrity_id = dispatcher.register_celebrity(user, user_name);
+    start_cheat_caller_address(contract_address, user1);
+    dispatcher.delegate_manager(user, user1);
+    // Validate that the coujobrse ID is correctly incremented
+    assert(celebrity_id == 1, 'job_id should start from 1');
+}
+
+#[test]
+fn test_set_gift_prefrence() {
+    let contract_address = setup();
+    let dispatcher = IRubDubNFTDispatcher { contract_address };
+
+    // Test input values
+    let user: ContractAddress = contract_address_const::<'user'>();
+    let user1: ContractAddress = contract_address_const::<'manager'>();
+    let user_name = 'wizkid';
+
+    // Ensure the caller is the admin
+    start_cheat_caller_address(contract_address, user);
+    // Call create_job
+    let celebrity_id = dispatcher.register_celebrity(user, user_name);
+    dispatcher.set_gift_preferences(user, GiftCategory::Roses);
+    // Validate that the coujobrse ID is correctly incremented
+    assert(celebrity_id == 1, 'job_id should start from 1');
+
+    let celebrity = dispatcher.get_celebrity(celebrity_id);
+
+    assert(celebrity.preferences == GiftCategory::Roses, ' Gift prefrence mismatch');
+}
+
 #[test]
 fn test_mint_gift() {
     let contract_address = setup();
@@ -99,9 +167,6 @@ fn test_batch_mint_gift() {
     let onwer_of = dispatcher.owner(8);
     assert(onwer_of == user, 'mint fail');
 }
-// #[test]
-// #[should_panic(expected: ('Not the content creator',))]
-
 // println!("Array len: {}", job.len());
 
 
