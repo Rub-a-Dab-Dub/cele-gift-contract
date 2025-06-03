@@ -9,7 +9,7 @@ pub mod RubDub {
         Map, StorageMapReadAccess, StorageMapWriteAccess, StoragePointerReadAccess,
         StoragePointerWriteAccess,
     };
-    use starknet::{ContractAddress, get_caller_address};
+    use starknet::{ContractAddress, get_caller_address, contract_address_const};
 
     component!(path: ERC721Component, storage: erc721, event: ERC721Event);
     component!(path: SRC5Component, storage: src5, event: SRC5Event);
@@ -168,6 +168,8 @@ pub mod RubDub {
             let id = self.celebrity_id_count.read() + 1;
             self.celebrity_id_count.write(id);
 
+            let manager : ContractAddress = contract_address_const::<'0x0'>();
+
             let celebrity = Celebrity {
                 id,
                 address,
@@ -175,6 +177,8 @@ pub mod RubDub {
                 verified: false,
                 royaltyPercentage: self.royaltyPercentage.read(),
                 registered: true,
+                manager,
+                preferences: GiftCategory::NoneSet,
             };
 
             self.celebrities.write(address, celebrity);
@@ -192,6 +196,41 @@ pub mod RubDub {
             self.celebrities.write(address, celeb);
             self.celebrities_id.write(celeb.id, celeb);
             self.emit(CelebrityVerified { id: celeb.id, address });
+        }
+
+        fn set_gift_preferences(
+            ref self: ContractState,
+            celebrity_address: ContractAddress,
+            preferences: GiftCategory,
+        ) {
+            let mut celeb = self.celebrities.read(celebrity_address);
+            assert(celeb.registered, 'Celebrity not registered');
+            celeb.preferences = preferences;
+            self.celebrities.write(celebrity_address, celeb);
+            self.celebrities_id.write(celeb.id, celeb);
+        }
+
+        fn delegate_manager(
+            ref self: ContractState,
+            celebrity_address: ContractAddress,
+            manager: ContractAddress,
+        ) {
+            let caller = get_caller_address();
+            let mut celeb = self.celebrities.read(celebrity_address);
+            assert(celeb.registered, 'Celebrity not registered');
+            assert(caller == celeb.address, 'No authorization');
+            celeb.manager = manager;
+            self.celebrities.write(celebrity_address, celeb);
+            self.celebrities_id.write(celeb.id, celeb);
+        }
+        fn get_manager(self: @ContractState, celebrity_id: u256) -> ContractAddress {
+            let celeb = self.celebrities_id.read(celebrity_id);
+            celeb.manager
+        }
+
+        fn get_preferences(self: @ContractState, celebrity_id: u256) -> GiftCategory {
+            let celeb = self.celebrities_id.read(celebrity_id);
+            celeb.preferences
         }
 
         fn get_celebrity(self: @ContractState, celebrity_id: u256) -> Celebrity {
