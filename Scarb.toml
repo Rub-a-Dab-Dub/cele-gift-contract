@@ -8,6 +8,7 @@ edition = "2024_07"
 [dependencies]
 starknet = "2.11.2"
 openzeppelin = "1.0.0"
+alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
 
 [dev-dependencies]
 snforge_std = "0.39.0"
