@@ -1,6 +1,7 @@
 pub mod contracts {
     // pub mod Gift;
     pub mod RubDubNFT;
+    pub mod CeleGiftInteraction;
 }
 
 pub mod interfaces {
